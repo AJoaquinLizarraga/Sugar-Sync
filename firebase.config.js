@@ -1,9 +1,12 @@
 /** @format */
 
 // Import the functions you need from the SDKs you need
+// import { applicationDefault, cert } from "firebase-admin/app"
 import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
 import { getAuth } from "firebase/auth"
+import { getFirestore } from "firebase/firestore"
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,47 +22,10 @@ const firebaseConfig = {
   measurementId: "G-VG6WN14WXM",
 }
 
-// connectAuthEmulator(auth, "http://localhost:3002")
-// createUserWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in
-//     const user = userCredential.user
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code
-//     const errorMessage = error.message
-//     // ..
-//   })
-
-// signInWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in
-//     const user = userCredential.user
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code
-//     const errorMessage = error.message
-//   })
-
-// onAuthStateChanged(auth, (user) => {
-//   if (user) {
-//     // User is signed in, see docs for a list of available properties
-//     // https://firebase.google.com/docs/reference/js/auth.user
-//     const uid = user.uid
-//     // ...
-//   } else {
-//     // User is signed out
-//     // ...
-//   }
-// })
-
-// Initialize Firebase
-
 const app = initializeApp(firebaseConfig)
+const db = getFirestore()
 
 const auth = getAuth(app)
-export { auth }
+export { app, auth, db }
 
 // const analytics = getAnalytics(app)

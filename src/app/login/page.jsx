@@ -2,24 +2,15 @@
 "use client"
 import React, { useState } from "react"
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
-
-import { auth } from "../../../firebase.config"
-
+import { doc, setDoc } from "firebase/firestore"
+import { v4 as randomUUID } from "uuid"
+const id = randomUUID()
+import { auth, db } from "../../../firebase.config"
+import { Button } from "@material-tailwind/react"
+// import { Timestamp } from "firebase-admin/firestore"
+// import sendData from "@/utils/addDB"
 const Login = () => {
   const [userAuth, setUserAuth] = useState([])
-  // const handleGoogleSignIn = async () => {
-  //   const provider = new GoogleAuthProvider()
-
-  //   try {
-  //     const result = signInWithPopup(auth, provider)
-  //     const user = result.user
-  //     console.log(user)
-  //     setUserAuth(user)
-  //     console.log(userAuth)
-  //   } catch (error) {
-  //     console.error(error.message)
-  //   }
-  // }
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider()
@@ -29,8 +20,20 @@ const Login = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result)
         const token = credential.accessToken
         const user = result.user
-        console.log(user)
+        console.log(user.displayName)
         setUserAuth(user)
+      })
+      .then(async () => {
+        const data = {
+          name: userAuth.displayName,
+          email: userAuth.email,
+          diabetesType: 1,
+          age: 25,
+          // dateExample: Timestamp.fromDate(new Date("November 15, 2023")),
+        }
+
+        const res = await setDoc(doc(db, "users", id), data)
+        console.log(res)
       })
       .catch((error) => {
         console.error(error.message)
@@ -44,12 +47,19 @@ const Login = () => {
     <div>
       {/* <Button>login</Button> */}
       <h2></h2>
-      <button
+      {/* <button
         onClick={handleGoogleSignIn}
         className="bg-blue-500 hover:bg-blue-700 text-white"
       >
         hasodfaosdn
-      </button>
+      </button> */}
+      <Button
+        className="m-10 bg-orange-900 p-5 border-red-800"
+        variant="outlined"
+        onClick={handleGoogleSignIn}
+      >
+        Login
+      </Button>
     </div>
   )
 }
