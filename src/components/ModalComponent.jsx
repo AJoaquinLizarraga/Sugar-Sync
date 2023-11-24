@@ -1,3 +1,4 @@
+/** @format */
 'use client'
 
 import React from "react";
@@ -6,14 +7,13 @@ import {
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
   Card,
   Input,
   Checkbox,
   Typography,
 } from "@material-tailwind/react";
  
-export function Modal() {
+const ModalComponent = () => {
   const [open, setOpen] = React.useState(false);
  
   const handleOpen = () => setOpen(!open);
@@ -168,3 +168,5 @@ export function Modal() {
     </>
   );
 }
+
+export default ModalComponent;

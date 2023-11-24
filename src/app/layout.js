@@ -4,7 +4,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 import ProvidersComponent from '@/components/ProvidersComponent'
-import NavigationComponent from '@/components/NavigationComponent'
+import Navigation from '@/components/NavigationComponent'
 import FooterComponent from '@/components/FooterComponent'
 
 export const metadata = {
@@ -17,7 +17,7 @@ export default function RootLayout ({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <ProvidersComponent>
-          <NavigationComponent />
+          <Navigation/>
           <div className="min-h-[100vh] flex flex-col justify-between">
             {children}
             <FooterComponent />

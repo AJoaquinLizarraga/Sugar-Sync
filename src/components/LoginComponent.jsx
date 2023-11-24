@@ -5,11 +5,15 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { doc, setDoc, getDocs, collection, query, where } from "firebase/firestore"
 import { v4 as randomUUID } from "uuid"
 const id = randomUUID()
-import { auth, db } from "../../../firebase.config"
+import { auth, db } from "../../firebase.config"
 import { Button } from "@material-tailwind/react"
+import { useRouter } from 'next/navigation'
+import ModalComponent from './ModalComponent.jsx'
 
 const Login = () => {
+  const router = useRouter()
   const [userAuth, setUserAuth] = useState([])
+  const [openModal, setOpenModal] = useState(false)
   const [profileInfo, setProfileInfo] = useState({
       name: userAuth.displayName,
       email: userAuth.email,
@@ -18,14 +22,8 @@ const Login = () => {
       weight: "",
       height: "",
       diabetesType: "",
-      insuline1: {
-          name: "",
-          basalDose: ""
-      },
-      insuline2: {
-          name: "",
-          basalDose: ""
-      },
+      insulin1: "",
+      insulin2: "",
       correctionFactor: "",
       bmi: ""
   })
@@ -46,33 +44,31 @@ const Login = () => {
         const patient = await getDocs(q);
         
         if (patient.exists()) {
-          console.log("redireccionar a home con patientData como prop");
+          router.push('/');
         } else {
-          console.log("abrir modal y cargar datos");
-        }
-
+         setOpenModal(true)
+        
         const data = {
           name: userAuth.displayName,
           email: userAuth.email,
-          age: "edad",
-          gender: "genero",
-          weight: "peso",
-          height: "altura",
-          diabetesType: "tipo",
-          insuline1: {
-              name: "insulina",
-              basalDose: "dosis"
-          },
-          insuline2: {
-              name: "insulina",
-              basalDose: "dosis"
-          },
-          correctionFactor: "autofill",
-          bmi: "IMC autofill"
+          age: profileInfo.age,
+          gender: profileInfo.gender,
+          weight: profileInfo.weight,
+          height: profileInfo.height,
+          diabetesType: profileInfo.diabetesType,
+          insulin1: profileInfo.insulin1,
+          insulin2: profileInfo.insulin2,
+          correctionFactor: 1800 / profileInfo.insulin1,
+          bmi: profileInfo.weight / (profileInfo.height ^ 2)
         }
 
         const res = await setDoc(doc(db, "users", id), data)
-        console.log(res)
+        if (res.exists()) {
+          router.push('/');
+        } else {
+         return
+        }
+      }
       })
       .catch((error) => {
         console.error(error.message)
@@ -87,8 +83,12 @@ const Login = () => {
       >
         Login
       </Button>
+      {openModal === true ?
+      <ModalComponent setProfileInfo={setProfileInfo} />
+      : null
+      }
     </div>
   )
 }
 
-export default Login
+export default Login;
