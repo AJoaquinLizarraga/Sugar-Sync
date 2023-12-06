@@ -12,11 +12,11 @@ import ModalComponent from './ModalComponent.jsx'
 
 const Login = () => {
   const router = useRouter()
-  const [userAuth, setUserAuth] = useState([])
+  const [userAuth, setUserAuth] = useState({})
   const [openModal, setOpenModal] = useState(false)
   const [profileInfo, setProfileInfo] = useState({
-      name: userAuth.displayName,
-      email: userAuth.email,
+      name: userAuth?.displayName,
+      email: userAuth?.email,
       age: "",
       gender: "",
       weight: "",
@@ -37,17 +37,20 @@ const Login = () => {
         const token = credential.accessToken
         const user = result.user
         setUserAuth(user)
+        console.log(userAuth)
       })
       .then(async () => {
-        const citiesRef = collection(db, "users");
-        const q = query(citiesRef, where("email", "==", userAuth.email));
-        const patient = await getDocs(q);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", userAuth?.email));
+        const querySnapshot = await getDocs(q);
         
-        if (patient.exists()) {
+        if (!querySnapshot.empty) {
           router.push('/');
         } else {
          setOpenModal(true)
-        
+        }
+      })
+      .then(async () => {
         const data = {
           name: userAuth.displayName,
           email: userAuth.email,
@@ -63,17 +66,13 @@ const Login = () => {
         }
 
         const res = await setDoc(doc(db, "users", id), data)
-        if (res.exists()) {
-          router.push('/');
-        } else {
-         return
-        }
-      }
+        router.push('/');
       })
       .catch((error) => {
-        console.error(error.message)
-      })
-  }
+        console.error(error.message);
+      });
+  };
+  
   return (
     <div>
       <Button
@@ -84,7 +83,7 @@ const Login = () => {
         Login
       </Button>
       {openModal === true ?
-      <ModalComponent setProfileInfo={setProfileInfo} />
+      <ModalComponent setProfileInfo={setProfileInfo} profileInfo={profileInfo} />
       : null
       }
     </div>
