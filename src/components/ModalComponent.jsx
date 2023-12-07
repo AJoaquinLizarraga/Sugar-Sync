@@ -13,11 +13,12 @@ import {
   Typography,
 } from "@material-tailwind/react";
  
-const ModalComponent = ({setProfileInfo, profileInfo}) => {
-  const [open, setOpen] = useState(false);
+const ModalComponent = ({setProfileInfo, profileInfo, setOpenModal, openModal, setOnSubmit}) => {
   const [incomplete, setIncomplete] = useState(true)
 
-  const handleOpen = () => setOpen(!open);
+  const showModal = () => {
+   setOnSubmit(true)
+  }
 
   const handleChange = (event) => {
     setProfileInfo({
@@ -25,30 +26,27 @@ const ModalComponent = ({setProfileInfo, profileInfo}) => {
       [event.target.name]: event.target.value
     })
     const { age, gender, weight, height, diabetesType, insulin1, insulin2 } = profileInfo
-    setIncomplete(age.length === 0 || gender.length === 0 ||  weight.length === 0 ||  height.length === 0 ||  diabetesType.length === 0 ||  insulin1.length === 0 ||  insulin2.length === 0)
-  }
-  
-  const handleSubmit = async () => {
-      router.push('/')
+    if (age.length !== 0 && gender.length !== 0 &&  weight.length !== 0 &&  height.length !== 0 &&  diabetesType.length !== 0 &&  insulin1.length !== 0 &&  insulin2.length !== 0){
+      setIncomplete(false)
+    }
   }
 
   const handleKeyPress = event => {
       if (event.key === 'Enter' && incomplete === false) {
-        handleSubmit()
+        setOpenModal(false)
       }
   }
   
   return (
     <>
-      <Button onClick={handleOpen} variant="gradient">
-        Open Dialog
-      </Button>
-      <Dialog open={open} handler={handleOpen}>
+    <div className="m-6">
+
+      <Dialog open={openModal}>
         <DialogHeader>Complete your personal information</DialogHeader>
         <DialogBody>
         <Card color="transparent" shadow={false}>
-      <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96" onKeyPress={handleKeyPress}>
-        <div className="mb-1 flex flex-col gap-6">
+      <form className="mt-8 mb-2 w-80 h-80 max-w-screen-lg sm:w-96" onKeyPress={handleKeyPress}>
+        <div className="mb-1 flex flex-col">
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Name
           </Typography>
@@ -59,7 +57,8 @@ const ModalComponent = ({setProfileInfo, profileInfo}) => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
-
+            value={profileInfo.name}
+            contentEditable={false}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Email
@@ -71,6 +70,8 @@ const ModalComponent = ({setProfileInfo, profileInfo}) => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            value={profileInfo.email}
+            contentEditable={false}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Age
@@ -201,13 +202,14 @@ const ModalComponent = ({setProfileInfo, profileInfo}) => {
           }
           containerProps={{ className: "-ml-2.5" }}
         />
-        <Button variant="gradient" color="blue" onClick={incomplete === false ? handleSubmit : null}>
+        <Button variant="gradient" color="blue" onClick={incomplete === false ? showModal : null}>
           Complete
         </Button>
       </form>
     </Card>
     </DialogBody>
     </Dialog>
+    </div>
     </>
   );
 }

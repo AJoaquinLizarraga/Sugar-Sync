@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';  // Asegúrate de importar 'next/image'
+import Image from 'next/image'; 
 import colibri from '../../public/assets/colibri.png'
 
 const HomeComponent = (patientData) => {
@@ -8,12 +8,10 @@ const HomeComponent = (patientData) => {
       <div className="container m-auto px-5">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 pt-10">
 
-          {/* Imagen en la mitad izquierda */}
           <div className="hidden md:block md:col-span-1 lg:col-span-1">
             <Image src={colibri} alt="Bird Image" width={600} height={600} />
           </div>
 
-          {/* Enlaces en la mitad derecha */}
           <div className="md:col-span-1 lg:col-span-1">
             <Link
               href={'/bloodSugar'}

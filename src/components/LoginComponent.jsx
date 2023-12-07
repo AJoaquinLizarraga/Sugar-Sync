@@ -12,11 +12,11 @@ import ModalComponent from './ModalComponent.jsx'
 
 const Login = () => {
   const router = useRouter()
-  const [userAuth, setUserAuth] = useState({})
   const [openModal, setOpenModal] = useState(false)
+  const [onSubmit, setOnSubmit] = useState(false)
   const [profileInfo, setProfileInfo] = useState({
-      name: userAuth?.displayName,
-      email: userAuth?.email,
+      name: "",
+      email: "",
       age: "",
       gender: "",
       weight: "",
@@ -29,31 +29,29 @@ const Login = () => {
   })
 
   const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider()
+    try {
+      const provider = new GoogleAuthProvider();
 
-    await signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result)
-        const token = credential.accessToken
-        const user = result.user
-        setUserAuth(user)
-        console.log(userAuth)
-      })
-      .then(async () => {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", userAuth?.email));
-        const querySnapshot = await getDocs(q);
-        
-        if (!querySnapshot.empty) {
-          router.push('/');
-        } else {
-         setOpenModal(true)
-        }
-      })
-      .then(async () => {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+
+      setProfileInfo({...profileInfo, email: user.email, name: user.displayName})
+
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", user.email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+         setOpenModal(true);
+      } else {
+        router.push("/");
+      }
+      if (onSubmit === true){
         const data = {
-          name: userAuth.displayName,
-          email: userAuth.email,
+          name: user.displayName,
+          email: user.email,
           age: profileInfo.age,
           gender: profileInfo.gender,
           weight: profileInfo.weight,
@@ -61,20 +59,23 @@ const Login = () => {
           diabetesType: profileInfo.diabetesType,
           insulin1: profileInfo.insulin1,
           insulin2: profileInfo.insulin2,
-          correctionFactor: 1800 / profileInfo.insulin1,
-          bmi: profileInfo.weight / (profileInfo.height ^ 2)
-        }
-
-        const res = await setDoc(doc(db, "users", id), data)
-        router.push('/');
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
-  };
+          correctionFactor: "",
+          bmi: ""
+          // correctionFactor: 1800 / profileInfo.insulin1,
+          // bmi: profileInfo.weight / Math.pow(profileInfo.height, 2)
+        };
   
+        const res = await setDoc(doc(db, "users", id), data);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+
   return (
-    <div>
+    <div className="">
       <Button
         className="m-10 bg-blue-900 p-5 border-blue-200"
         variant="outlined"
@@ -82,9 +83,9 @@ const Login = () => {
       >
         Login
       </Button>
-      {openModal === true ?
-      <ModalComponent setProfileInfo={setProfileInfo} profileInfo={profileInfo} />
-      : null
+      {openModal === true &&
+      <ModalComponent setProfileInfo={setProfileInfo} profileInfo={profileInfo} setOpenModal={setOpenModal} openModal={openModal} setOnSubmit={setOnSubmit}/>
+      
       }
     </div>
   )
