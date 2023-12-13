@@ -7,19 +7,30 @@ import { getAnalytics } from "firebase/analytics"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 
+import "dotenv/config"
+
+const {
+  API_KEY,
+  AUTH_DOMAIN,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+  MEASUREMENT_ID,
+} = process.env
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDcfCDd4RWQm7hhNuhd8_WSqX_SX-c_XY0",
-  authDomain: "sugar-sync-ea81d.firebaseapp.com",
-  projectId: "sugar-sync-ea81d",
-  storageBucket: "sugar-sync-ea81d.appspot.com",
-  messagingSenderId: "797764504841",
-  appId: "1:797764504841:web:0cddb5ff930df971d057d8",
-  measurementId: "G-VG6WN14WXM",
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 }
 
 const app = initializeApp(firebaseConfig)
