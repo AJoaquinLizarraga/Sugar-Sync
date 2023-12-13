@@ -1,7 +1,7 @@
 /** @format */
 'use client'
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -13,22 +13,40 @@ import {
   Typography,
 } from "@material-tailwind/react";
  
-const ModalComponent = () => {
-  const [open, setOpen] = React.useState(false);
- 
-  const handleOpen = () => setOpen(!open);
- 
+const ModalComponent = ({setProfileInfo, profileInfo, setOpenModal, openModal, setOnSubmit}) => {
+  const [incomplete, setIncomplete] = useState(true)
+
+  const showModal = () => {
+   setOnSubmit(true)
+  }
+
+  const handleChange = (event) => {
+    setProfileInfo({
+      ...profileInfo,
+      [event.target.name]: event.target.value
+    })
+    const { age, gender, weight, height, diabetesType, insulin1, insulin2 } = profileInfo
+    if (age.length !== 0 && gender.length !== 0 &&  weight.length !== 0 &&  height.length !== 0 &&  diabetesType.length !== 0 &&  insulin1.length !== 0 &&  insulin2.length !== 0){
+      setIncomplete(false)
+    }
+  }
+
+  const handleKeyPress = event => {
+      if (event.key === 'Enter' && incomplete === false) {
+        setOpenModal(false)
+      }
+  }
+  
   return (
     <>
-      <Button onClick={handleOpen} variant="gradient">
-        Open Dialog
-      </Button>
-      <Dialog open={open} handler={handleOpen}>
+    <div className="m-6">
+
+      <Dialog open={openModal}>
         <DialogHeader>Complete your personal information</DialogHeader>
         <DialogBody>
         <Card color="transparent" shadow={false}>
-      <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
-        <div className="mb-1 flex flex-col gap-6">
+      <form className="mt-8 mb-2 w-80 h-80 max-w-screen-lg sm:w-96" onKeyPress={handleKeyPress}>
+        <div className="mb-1 flex flex-col">
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Name
           </Typography>
@@ -39,6 +57,8 @@ const ModalComponent = () => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            value={profileInfo.name}
+            contentEditable={false}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Email
@@ -50,6 +70,8 @@ const ModalComponent = () => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            value={profileInfo.email}
+            contentEditable={false}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Age
@@ -61,18 +83,22 @@ const ModalComponent = () => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            onChange={handleChange}
+            name="age"
           />
-          <Typography variant="h6" color="blue-gray" className="-mb-3">
+           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Gender
           </Typography>
-          <Input
-            size="lg"
-            placeholder="gender"
+          <select
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
+            onChange={handleChange}
+            name="gender"
+          >
+            <option value="" disabled selected>Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
           <Typography variant="h6" color="blue-gray" className="-mb-3">
            Weight
           </Typography>
@@ -83,6 +109,8 @@ const ModalComponent = () => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            onChange={handleChange}
+            name="weight"
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Height
@@ -94,35 +122,51 @@ const ModalComponent = () => {
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            onChange={handleChange}
+            name="height"
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Diabetes Type
           </Typography>
-          <Input
-            size="lg"
-            placeholder="1 or 2 select"
+          <select
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
+            onChange={handleChange}
+            name="diabetesType"
+          >
+            <option value="" disabled selected>Select</option>
+            <option value="type1">Type 1</option>
+            <option value="type2">Type 2</option>
+          </select>
           <Typography variant="h6" color="blue-gray" className="-mb-3">
-            Insulin
+            Insulin 1
           </Typography>
-          <Input
-            size="lg"
-            placeholder="type select"
+          <select
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
-          />
+            onChange={handleChange}
+            name="insulin1"
+          >
+            <option value="" disabled selected>Select</option>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+          </select>
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Insulin 2
+          </Typography>
+          <select
+            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+            onChange={handleChange}
+            name="insulin2"
+          >
+            <option value="" disabled selected>Select</option>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+          </select>
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Correction Factor
           </Typography>
           <Input
             size="lg"
-            placeholder="autofill and disable"
+            placeholder={profileInfo.correctionFactor}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
@@ -133,7 +177,7 @@ const ModalComponent = () => {
           </Typography>
           <Input
             size="lg"
-            placeholder="autofill and disable"
+            placeholder= {profileInfo.bmi}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
@@ -158,13 +202,14 @@ const ModalComponent = () => {
           }
           containerProps={{ className: "-ml-2.5" }}
         />
-        <Button variant="gradient" color="blue" onClick={handleOpen}>
+        <Button variant="gradient" color="blue" onClick={incomplete === false ? showModal : null}>
           Complete
         </Button>
       </form>
     </Card>
     </DialogBody>
     </Dialog>
+    </div>
     </>
   );
 }

@@ -7,6 +7,7 @@ import {
   Typography,
   IconButton,
 } from "@material-tailwind/react";
+import Link from "next/link";
  
 export default function Navigation() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -26,9 +27,9 @@ export default function Navigation() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <a href="/profile" className="flex items-center">
+        <Link href="/profile" className="flex items-center">
           Profile
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
